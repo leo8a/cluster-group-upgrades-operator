@@ -38,12 +38,11 @@ render_index(){
     if [[ $? -ne 0 ]]; then
         return 1
     fi
-
 }
 
 extract_packages(){
     local packages
-    cat $config_volume_path/operators.packagesAndChannels |tr -d " " > /tmp/packagesAndChannels
+    < $config_volume_path/operators.packagesAndChannels tr -d " " > /tmp/packagesAndChannels
     for item in $(sort -u '/tmp/packagesAndChannels'); do
         pkg=$(echo $item |cut -d ':' -f 1)
         packages="$packages$pkg,"
@@ -53,7 +52,7 @@ extract_packages(){
 }
 
 olm_main(){
-    if ! [[ -n $(sort -u $config_volume_path/operators.indexes) ]]; then
+    if [[ -z $(sort -u $config_volume_path/operators.indexes) ]]; then
       log_debug "Operators index is not specified. Operators won't be pre-cached"
       return 0
     fi
@@ -73,7 +72,7 @@ olm_main(){
         fi
         log_debug "Image mount: $image_mount"
         packages=$(extract_packages)
-        if ! [[ -n $packages ]]; then
+        if [[ -z $packages ]]; then
           log_debug "operators index is set, but no packages provided - inconsistent configuration"
           return 1
         fi
