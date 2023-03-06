@@ -10,6 +10,13 @@ cp -rf /etc/config /host/tmp/precache/config
 if [ -n "$(cat /etc/config/platform.image)" ]; then
     /opt/precache/check_space
 fi
-chroot /host /tmp/precache/release
-chroot /host /tmp/precache/olm
-chroot /host /tmp/precache/pull
+
+# First pass
+time chroot /host /tmp/precache/release
+time chroot /host /tmp/precache/olm
+time chroot /host /tmp/precache/pull
+
+# Second pass
+time chroot /host /tmp/precache/release
+time chroot /host /tmp/precache/olm
+time chroot /host /tmp/precache/pull
